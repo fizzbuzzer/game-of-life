@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game of Life</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="wrapper">
+    <main class="game" id="game">
+      <canvas id="field"></canvas>
+    </main>
+    <aside class="sidebar">
+      <div class="controls">
+        <div class="controls__btn-box">
+          <button class="btn" id="btn-random">Заполнить случайно</button>
+        </div>
+        <div class="controls__btn-box">
+          <button class="btn" id="btn-clear">Очистить поле</button>
+        </div>
+        <hr>
+        <div class="controls__btn-box">
+          <button class="btn" id="btn-toggle" data-active-text="Пауза" data-inactive-text="Старт">Старт</button>
+        </div>
+        <hr>
+        <div class="controls__btn-box">
+          <button class="btn" id="btn-speed-up">Ускорить</button>
+        </div>
+        <div class="controls__btn-box">
+          <button class="btn" id="btn-slow-down">Замедлить</button>
+        </div>
+        <div class="controls__btn-box">
+          <label class="label" for="input-timeout-value">Срок жизни поколения</label>
+          <input id="input-timeout-value" class="input" disabled value="">
+        </div>
+      </div>
+    </aside>
+  </div>
+  <script src="js/script.js"></script>
+</body>
+</html>
