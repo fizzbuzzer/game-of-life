@@ -22,23 +22,27 @@ class GameOfLife {
     this.#inputTimeout.value = `${this.#timeout} мс`;
   }
 
-  constructor() {
-    this.#nodeGrid = document.getElementById('field');
-    this.#gridCtx = this.#nodeGrid.getContext('2d');
-    this.#btnToggle = document.getElementById('btn-toggle');
-    this.#inputTimeout = document.getElementById('input-timeout-value');
+  constructor(config) {
+    const { controls } = config;
+    
+    this.#btnToggle = document.getElementById(controls.btnToggleId);
+    this.#inputTimeout = document.getElementById(controls.inputTimeoutId);
 
-    const nodeGridWrapper = document.getElementById('game');
+    const nodeGridWrapper = document.getElementById(controls.gridWrapperId);
+    this.#nodeGrid = document.createElement('canvas');
+    nodeGridWrapper.appendChild(this.#nodeGrid);
+    this.#gridCtx = this.#nodeGrid.getContext('2d');
+
     this.#nodeGrid.width = nodeGridWrapper.clientWidth;
     this.#nodeGrid.height = nodeGridWrapper.clientHeight;
     this.#cols = Math.floor(this.#nodeGrid.width / GameOfLife.#CELL_SIZE);
     this.#rows = Math.floor(this.#nodeGrid.height / GameOfLife.#CELL_SIZE);
     this.#timeoutValue = 500;
 
-    document.getElementById('btn-random').addEventListener('click', this.#onFillRandomSeed.bind(this));
-    document.getElementById('btn-clear').addEventListener('click', this.#onClear.bind(this));
-    document.getElementById('btn-speed-up').addEventListener('click', this.#onChangeSpeed.bind(this, -100));
-    document.getElementById('btn-slow-down').addEventListener('click', this.#onChangeSpeed.bind(this, 100));
+    document.getElementById(controls.btnRandomId).addEventListener('click', this.#onFillRandomSeed.bind(this));
+    document.getElementById(controls.btnClearId).addEventListener('click', this.#onClear.bind(this));
+    document.getElementById(controls.btnSpeedUpId).addEventListener('click', this.#onChangeSpeed.bind(this, -100));
+    document.getElementById(controls.btnSlowDownId).addEventListener('click', this.#onChangeSpeed.bind(this, 100));
     this.#btnToggle.addEventListener('click', this.#onToggle.bind(this));
     this.#nodeGrid.addEventListener('click', this.#onUpdateCell.bind(this));
 
@@ -155,7 +159,17 @@ class GameOfLife {
 }
 
 function init() {
-  new GameOfLife();
+  new GameOfLife({
+    controls: {
+      btnToggleId: 'btn-toggle',
+      inputTimeoutId: 'input-timeout-value',
+      gridWrapperId: 'game',
+      btnRandomId: 'btn-random',
+      btnClearId: 'btn-clear',
+      btnSpeedUpId: 'btn-speed-up',
+      btnSlowDownId: 'btn-slow-down',
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => init());
