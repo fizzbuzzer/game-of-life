@@ -91,7 +91,7 @@ class GameOfLife {
     const col = Math.floor(x / GameOfLife.#CELL_SIZE);
     const row = Math.floor(y / GameOfLife.#CELL_SIZE);
     this.#grid[row][col] = 1 - this.#grid[row][col];
-    this.#repaintCell(row, col);
+    this.#repaintCell(row, col, this.#grid[row][col]);
   }
 
   #initialFill() {
@@ -105,31 +105,36 @@ class GameOfLife {
   #repaint() {
     this.#grid.forEach((row, i) => {
       row.forEach((col, j) => {
-        this.#repaintCell(i, j);
+        this.#repaintCell(i, j, this.#grid[i][j]);
       })
     })
   }
 
-  #repaintCell(i, j) {
-    let fillColor = this.#grid[i][j] === 1 ? GameOfLife.#LIVE_CELL_COLOR : GameOfLife.#DEAD_CELL_COLOR;
+  #repaintCell(i, j, state) {
+    let fillColor = state === 1 ? GameOfLife.#LIVE_CELL_COLOR : GameOfLife.#DEAD_CELL_COLOR;
     this.#gridCtx.fillStyle = fillColor;
     this.#gridCtx.fillRect(j * GameOfLife.#CELL_SIZE, i * GameOfLife.#CELL_SIZE, GameOfLife.#CELL_SIZE, GameOfLife.#CELL_SIZE);
   }
 
   #updateState() {
     let count;
+    let oldCellState;
+    let newCellState;
     const state = this.#grid.map((row, i) => {
       return row.map((col, j) => {
         count = this.#countNeighbors(i, j);
-        if ((this.#grid[i][j] === 1 && count === 2) || count === 3) {
-          return 1;
+        oldCellState = this.#grid[i][j];
+        newCellState = ((oldCellState === 1 && count === 2) || count === 3) ? 1 : 0;
+        
+        if (oldCellState !== newCellState) {
+            this.#repaintCell(i, j, newCellState);
         }
-        return 0;
+
+        return newCellState;
       });
     });
 
     this.#grid = state;
-    this.#repaint();
   }
 
   #getCellValue(i, j) {
