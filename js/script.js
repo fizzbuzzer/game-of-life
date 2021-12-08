@@ -39,12 +39,21 @@ class GameOfLife {
     this.#rows = Math.floor(this.#nodeGrid.height / GameOfLife.#CELL_SIZE);
     this.#timeoutValue = 500;
 
-    document.getElementById(controls.btnRandomId).addEventListener('click', this.#onFillRandomSeed.bind(this));
-    document.getElementById(controls.btnClearId).addEventListener('click', this.#onClear.bind(this));
-    document.getElementById(controls.btnSpeedUpId).addEventListener('click', this.#onChangeSpeed.bind(this, -100));
-    document.getElementById(controls.btnSlowDownId).addEventListener('click', this.#onChangeSpeed.bind(this, 100));
-    this.#btnToggle.addEventListener('click', this.#onToggle.bind(this));
-    this.#nodeGrid.addEventListener('click', this.#onUpdateCell.bind(this));
+    const handlers = new Map([
+      [ document.getElementById(controls.btnRandomId), this.#onFillRandomSeed.bind(this) ],
+      [ document.getElementById(controls.btnClearId), this.#onClear.bind(this) ],
+      [ document.getElementById(controls.btnSpeedUpId), this.#onChangeSpeed.bind(this, -100) ],
+      [ document.getElementById(controls.btnSlowDownId), this.#onChangeSpeed.bind(this, 100) ],
+      [ this.#btnToggle, this.#onToggle.bind(this) ],
+      [ this.#nodeGrid, this.#onUpdateCell.bind(this) ],
+    ]);
+
+    window.addEventListener('click', (e) => {
+      const { target } = e;
+      if (handlers.has(target)) {
+        handlers.get(target)(e);
+      }
+    })
 
     this.#initialFill();
   }
@@ -65,7 +74,9 @@ class GameOfLife {
       newTimeout = 100;
     }
     this.#timeoutValue = newTimeout;
-    this.#run();
+    if (this.#isActive) {
+      this.#run();
+    }
   }
 
   #run() {
@@ -84,6 +95,7 @@ class GameOfLife {
   }
 
   #onUpdateCell(event) {
+    console.log(event)
     const rect = this.#nodeGrid.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
